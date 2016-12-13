@@ -16,6 +16,7 @@ local keyboard = require("scripts/kbd/keyboard")
 local vicious = require("vicious")
 local net_widgets = require("scripts/net_widgets")
 local lain = require("lain")
+local redshift = require("redshift")
 
 
 os.setlocale(os.getenv("ru_RU.UTF-8"))
@@ -29,7 +30,7 @@ function run_once(prg)
 end
 
 
-
+redshift.init(1)
 
 
 -- {{{ Error handling
@@ -77,11 +78,11 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
    {
+      awful.layout.suit.floating,
       awful.layout.suit.tile,
       awful.layout.suit.tile.left,
       awful.layout.suit.tile.bottom,
       awful.layout.suit.tile.top,
-      awful.layout.suit.floating,
       --    awful.layout.suit.fair,
       --    awful.layout.suit.fair.horizontal,
       --    awful.layout.suit.spiral,
@@ -105,7 +106,7 @@ end
 tags = {}
 for s = 1, screen.count() do
    -- Each screen has its own tag table.
-   tags[s] = awful.tag({ 1, 2, 3, 4, 5 }, s, layouts[1])
+   tags[s] = awful.tag({"α", "β", "ζ", "Θ", "Ξ" }, s, layouts[1])
 end
 -- }}}
 
@@ -486,8 +487,10 @@ globalkeys = awful.util.table.join(
    awful.key({ modkey, "Shift"   }, key_L,     function () awful.tag.incnmaster(-1)      end),
    awful.key({ modkey, "Control" }, key_H,     function () awful.tag.incncol( 1)         end),
    awful.key({ modkey, "Control" }, key_L,     function () awful.tag.incncol(-1)         end),
-   awful.key({ modkey,           }, key_Space, function () awful.layout.inc(layouts,  1) end),
-   awful.key({ modkey, "Shift"   }, key_Space, function () awful.layout.inc(layouts, -1) end),
+   awful.key({ modkey,           }, key_Space, function () awful.layout.inc(layouts,  1) 
+       naughty.notify({ title = 'Layout', text = awful.layout.getname(), timeout = 3 }) end),
+   awful.key({ modkey, "Shift"   }, key_Space, function () awful.layout.inc(layouts, -1) 
+       naughty.notify({ title = 'Layout', text = awful.layout.getname(), timeout = 3 }) end),
    awful.key({ modkey, "Shift"  }, key_R, function () awful.util.spawn_with_shell("systemctl reboot") end),
    awful.key({ modkey, "Shift"  }, key_S, function () awful.util.spawn_with_shell("systemctl poweroff") end),
    awful.key({ modkey,          }, "d", function () awful.util.spawn_with_shell("/usr/bin/rofi -show run") end),
@@ -525,7 +528,8 @@ clientkeys = awful.util.table.join(
       function (c)
 	 c.maximized_horizontal = not c.maximized_horizontal
 	 c.maximized_vertical   = not c.maximized_vertical
-   end)
+   end),
+   awful.key({ moskey }, "Shift", "d", redshift.toggle)
 )
 
 -- Compute the maximum number of digit we need, limited to 9
